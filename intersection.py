@@ -28,4 +28,6 @@ def intersection(bus):
         timer.start()
     else:
         print('bus goes through intersection'+str(time.time()))
-    
+    """
+    missing the coordinate changing part,need to unify standard usage
+    """
