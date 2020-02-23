@@ -1,4 +1,4 @@
-#!/usr/bin/env python2
+#!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 """
 Created on Sun Feb  2 21:36:26 2020
@@ -7,7 +7,7 @@ Created on Sun Feb  2 21:36:26 2020
 """
 
 import time
-from scipy.stats import poisson
+from scipy import stats
 import random
 import numpy as np
 import threading
@@ -15,7 +15,8 @@ import threading
 
 def intersection(bus):
     # r is the poisson generated number of cars when a bus gets in intersection, 10 estimated as mean
-    r = poisson.rvs(3, size=1);r=r[0]
+    r = stats.poisson.rvs(3, size=1)
+    r=r[0]
     def timerprint():
         print('bus starts and goes through intersection at'+str(time.time()))
     print('bus enter intersection')

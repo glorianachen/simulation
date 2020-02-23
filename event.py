@@ -1,5 +1,5 @@
 import queue
-
+    # event = Event(bus, eventData)
 class Event(object):
     def __init__( self, bus, eventData ):
         self.timestamp = bus.timestamp
@@ -17,16 +17,20 @@ class Event(object):
         print( 'its componentType is %s ' % (self.componentType) )
         # print('its next is %s ' % (self.next))
     
-    #compare with others??
+#compare with others??
     def __lt__(self, other):
         return self.timestamp < other.timestamp
+    def __eq__(self, other):
+        return self.timestamp == other.timestamp
 
-
+# eventData = EventData('arrival', comp)
 class EventData(object):
     def __init__(self, eventType, Component):
         self.eventType = eventType
         self.component = Component
-
+    
+# usage: comp = Component(34, 'station', 12, 0)
+# ???
 class Component(object):
     def __init__(self, id, componentType, processingTime, numAtQ ):
         self.id = id
@@ -41,7 +45,7 @@ class Scheduler():
 
     def schedule(self, event ):
         # self.FEL.put( Event( bus, eventData ) )
-        self.FEL.put(  event )
+        self.FEL.put( event )
 
     def runSim(self, eventHandler, bus, endTime):
         while not self.FEL.empty():
@@ -79,11 +83,12 @@ class EventHandeler(object):
 
 
 
+#usage: bus = Bus(23, 1255, stopImpl, 50, scheduler)
 class Bus(object):
     def __init__(self, route, timestamp, stop, capacity, scheduler):
         self.route = route
         self.timestamp = timestamp
-
+    #numAtStop is the number of bus
         self.numAtStop = stop.busAtQ
         self.numOnRoad = 0
         self.capacity = capacity
@@ -92,12 +97,13 @@ class Bus(object):
 
     def busGenerate(self):
         self.numOnRoad += 1
-
-
+#interval is a RV
         self.timestamp += 10
-
-        stop = Stop(12)
-        self.scheduler.schedule( Event( Bus( self.route, self.timestamp, stop, self.capacity, self.scheduler  ), EventData( 'generate' ,Component(34, 'Generator', 10, 0)) ) )
+#temporary setting
+        stop = BusStop(12,10)
+        #component __init__(self, id, componentType, processingTime, numAtQ ):
+#need to change the component id 34 here
+        self.scheduler.schedule( Event( self, EventData( 'generate' ,Component(34, 'Generator', 10, 0)) ) )
 
         # print('number of the bus on the road: %i' % (self.numOnRoad) )
 
@@ -107,18 +113,18 @@ class Bus(object):
     def busDeparture(self):
         self.numAtStop -= 1
 
-
-class Stop(object):
-    def __init__(self, stopId):
+# people
+class BusStop(object):
+    def __init__(self, stopId,peoplecount):
         self.id = stopId
-        self.peopleInStop = 0
+        self.peopleInStop = peoplecount
         self.busAtQ = 0
 
 
 
 if __name__ == '__main__':
-
-    stopImpl = Stop(455)
+#set up all bus stops
+    stopImpl = BusStop(455,10)
 
     scheduler = Scheduler()
 
