@@ -53,12 +53,11 @@ class Scheduler():
 
             # print(self.FEL.queue)
             nextEvent = self.FEL.get()
-            bus=nextEvent.bus
             now = nextEvent.timestamp
             if now > endTime:
                 break
 
-            eventHandler.handle( nextEvent, bus )
+            eventHandler.handle( nextEvent )
             # print( nextEvent )
             print( 'current timestamp is %s ' % (nextEvent.timestamp) )
             print('current route is %s ' % (nextEvent.route))
@@ -72,9 +71,9 @@ class EventHandeler(object):
     def __init__(self):
         pass
 
-    def handle(self, event, bus):
+    def handle(self, event):
         if event.eventType == 'generate':
-            bus.busGenerate()
+            event.bus.busGenerate()
 
         elif event.eventType == 'arrival':
             bus.busArrival()
@@ -84,14 +83,14 @@ class EventHandeler(object):
 
 
 
-#usage: bus = Bus(23, 1255, stopImpl, 50, scheduler)
+#usage: bus = Bus(23, 1255, 50, scheduler)
 class Bus(object):
-    def __init__(self, route, timestamp, stop, capacity, scheduler):
+    def __init__(self, route, timestamp, capacity, scheduler,numOnRoad):
         self.route = route
         self.timestamp = timestamp
-    #numAtStop is the number of bus
-        self.numAtStop = stop.busAtQ
-        self.numOnRoad = 0
+    #numAtStop is the deleted
+        #self.numAtStop = stop.busAtQ
+        self.numOnRoad=numOnRoad
         self.capacity = capacity
         self.peopleOnBus = 0
         #busy time or station
@@ -103,13 +102,16 @@ class Bus(object):
         self.scheduler = scheduler
         
     def busGenerate(self):
-        self.numOnRoad += 1
-#interval is a RV
+#set a maximum for numOnRoad
+        while self.numOnRoad<20:
+            self.numOnRoad += 1
+#NEED: interval is a RV
         self.timestamp += 10
-#temporary setting
-        stop = BusStop(12,10)
+#temporary setting,bus erased
+        #stop = BusStop(12,10)
+
         #component __init__(self, id, componentType, processingTime, numAtQ ):
-#need to change the component id 34 here
+#NEED: need to change the component id 34 here
         self.scheduler.schedule( Event( self, EventData( 'generate' ,Component(34, 'Generator', 10, 0)) ) )
 
         # print('number of the bus on the road: %i' % (self.numOnRoad) )
@@ -131,12 +133,13 @@ class BusStop(object):
 
 if __name__ == '__main__':
 #set up all bus stops
+    numOnRoad=0
     stopImpl = BusStop(455,10)
 
     scheduler = Scheduler()
 
 
-    bus = Bus(23, 2355, stopImpl, 50, scheduler)
+    bus = Bus(23, 2355, 50, scheduler,0)
     # bus.busGenerate()
     # bus.busGenerate()
 
@@ -151,6 +154,7 @@ if __name__ == '__main__':
 
     # scheduler = Scheduler()
     # scheduler.schedule(event)
+
     scheduler.runSim( eventHandler, 2485 )
 
 
