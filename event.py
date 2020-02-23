@@ -1,4 +1,8 @@
 import queue
+import queue
+import sys
+import datetime
+import time
 from scipy.stats import poisson
     # event = Event(bus, eventData)
 class Event(object):
@@ -106,7 +110,13 @@ class Bus(object):
     def busGenerate(self):
         self.numOnRoad += 1
 #interval is a RV
-        self.timestamp += 10
+        if t==0:
+            self.timestamp +=0
+        elif t%39==0:
+            self.timestamp +=18000
+        else:
+            self.timestamp +=1800
+        t+=1
 #temporary setting
         stop = BusStop(12,10)
         #component __init__(self, id, componentType, processingTime, numAtQ ):
@@ -136,8 +146,8 @@ if __name__ == '__main__':
 
     scheduler = Scheduler()
 
-
-    bus = Bus(23, 2355, stopImpl, 50, scheduler)
+    #20190905
+    bus = Bus(94, 1567675500, stopImpl, 50, scheduler)
     # bus.busGenerate()
     # bus.busGenerate()
 
@@ -152,7 +162,8 @@ if __name__ == '__main__':
 
     # scheduler = Scheduler()
     # scheduler.schedule(event)
-    scheduler.runSim( eventHandler, 2485 )
+    #20190908
+    scheduler.runSim( eventHandler, 1567975500 )
 
 
 
