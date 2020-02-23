@@ -9,7 +9,7 @@ class Event(object):
         self.route = bus.route
         self.eventType = eventData.eventType
         self.componentType = eventData.component.componentType
-        self.id = eventData.component.id
+        self.componentid = eventData.component.comid
         self.numAtQ = eventData.component.numAtQ
         # self.next = next
         return
@@ -35,8 +35,8 @@ class EventData(object):
 # usage: comp = Component(34, 'station', 12, 0)
 # ???
 class Component(object):
-    def __init__(self, id, componentType, processingTime, numAtQ ):
-        self.id = id
+    def __init__(self, comid, componentType, processingTime, numAtQ ):
+        self.comid = comid
         self.componentType = componentType
         self.processingTime = processingTime
         self.numAtQ = numAtQ
@@ -78,10 +78,10 @@ class EventHandeler(object):
             event.bus.busGenerate()
 
         elif event.eventType == 'arrival':
-            stop.busArrival()
+            busArrival(event.bus,event.componentid)
 
         else:
-            bus.busDepature()
+            thru_intersection(event.bus,event.componentid)
 
 
 
@@ -112,8 +112,8 @@ class Bus(object):
 #temporary setting,bus erased
         #stop = BusStop(12,10)
 
-        #component __init__(self, id, componentType, processingTime, numAtQ ):
-#NEED: need to change the component id 34 here
+        #component __init__(self, comid, componentType, processingTime, numAtQ ):
+#NEED: need to change the component comid 34 here
         self.scheduler.schedule( Event( self, EventData( 'generate' ,Component(34, 'Generator', 10, 0)) ) )
         # print('number of the bus on the road: %i' % (self.numOnRoad) )
 
@@ -128,43 +128,55 @@ class BusStop(object):
 #The function for busstop scenario:
 def busArrival(bus,busstop):
     if busstop.id in nearbystation:
-        Bus.peopleOnBus=Bus.capacity
+        bus.peopleOnBus=bus.capacity
     distance=busstop.distance
     #delay in the busstop is proportional to the distance,velocity is assumed 20 here
     delay=round(distance/20,2)
     #34 is an id, provoke another schedule arrangement
     if busstop.id+1 in Busstoplist:
         scheduler.schedule( Event( Bus(bus.route,bus.timestamp+delay,bus.capacity, bus.scheduler,bus.numOnRoad)), \
-        EventData( 'arrival' ,Component(bus., 'busArrival',delay , 0)) ) )
+        EventData( 'arrival' ,Component(id+1, 'busArrival',delay , 0)) ) 
     else:
         scheduler.schedule( Event( Bus(bus.route,bus.timestamp+delay,bus.capacity, bus.scheduler,bus.numOnRoad)), \
-        EventData( 'thru_intersection' ,Component(bus., 'thru_intersection',delay , 0)) ) )
+        EventData( 'thru_intersection' ,Component(id+1, 'thru_intersection',delay , 0)) ) 
 
     #else:
         #diff=Bus.capacity-Bus.peopleOnBus
     #if diff >=0:
         #total_passenger_that_get_aboard=available empty space(if exist)+newspace from random number of people that leave
-Class intersection():
+class intersection():
     def __init__(self,id):
         self.id=id
         self.distance=Distance[id]
 
 def checklight(timestamp):
     #assume that since 0000, 30sec for green, 30 for red, for all traffic lights
-    if mod(timestamp
+    if timestamp%60<30:
+        return (True,0)
+    else:
+        return (False,60-timestamp%60)
 def thru_intersection(bus,intersection):
     distance=intersection.distance
     #delay1 is proportional to the distance,velocity is assumed 20 here
     delay1=round(distance/20,2)
     #delay2 is the time waiting for red light
-    check=checklight(bus.timestamp+delay1)
-    If checklight():
+    temptime=bus.timestamp+delay1
+    check=checklight(temptime)
+    if check[0]:
         delay2=0
     else:
-        delay2=
-     #34 is an id
-    scheduler.schedule( Event( Bus(bus.route,bus.timestamp+delay,bus.capacity, bus.scheduler,bus.numOnRoad)), \
-        EventData( 'arrival' ,Component(bus., 'BusStop',delay , 0)) ) )
+        delay2=check[1]
+    #delay3 is the time to accelerate and pass through the intersection, depends on how many cars in advance
+    #If more time, change the random generator to the mod type from lecture notes
+    delay3=3+2.87*random.randint(1,8)
+    delay=delay1+delay2+delay3
+    if intersection.id+1 in Busstoplist:
+        scheduler.schedule( Event( Bus(bus.route,bus.timestamp+delay,bus.capacity, bus.scheduler,bus.numOnRoad)), \
+        EventData( 'arrival' ,Component(id+1, 'busArrival',delay , 0)) ) 
+    else:
+        scheduler.schedule( Event( Bus(bus.route,bus.timestamp+delay,bus.capacity, bus.scheduler,bus.numOnRoad)), \
+        EventData( 'thru_intersection' ,Component(id+1, 'thru_intersection',delay , 0)) ) 
+
     
 if __name__ == '__main__':
 #set up all bus stops, note that we need to set more people in stops that are closer to the stadium 
@@ -173,8 +185,12 @@ if __name__ == '__main__':
     stopImpl = BusStop(455,10)
 #NEED: a list of ids that indicate bus stops, not intersections
     Busstoplist=[]
+#NEED: Object list of stops and intersections, id is key
+    Objects={}
 #NEED: need the dict of distance after each busstop/intersection, stopid is key
     Distance={}
+#NEED: nearby station means that stops close to stadium, always a lot of people
+    nearbystation=[]
     scheduler = Scheduler()
 
     bus = Bus(23, 2355, 50, scheduler,0)
