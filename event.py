@@ -93,8 +93,14 @@ class Bus(object):
         self.numOnRoad = 0
         self.capacity = capacity
         self.peopleOnBus = 0
+        #busy time or station
+        #data_poisson = poisson.rvs(mu=5, size=5)
+        #peopleOnBus = sum(data_poisson)
+        #normal time or station
+        #data_poisson = poisson.rvs(mu=5, size=5)
+        #peopleOnBus = sum(data_poisson)
         self.scheduler = scheduler
-
+        
     def busGenerate(self):
         self.numOnRoad += 1
 #interval is a RV
