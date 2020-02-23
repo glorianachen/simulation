@@ -64,7 +64,10 @@ class Scheduler():
 
             eventHandler.handle( nextEvent, bus )
             # print( nextEvent )
-            print( 'current timestamp is %s ' % (nextEvent.timestamp) )
+            # print( 'current timestamp is %s ' % (nextEvent.timestamp) )
+            timeArray = time.localtime(nextEvent.timestamp)
+            StyleTime = time.strftime("%Y-%b-%d %a %H:%M:%S", timeArray)
+            print('current timestamp is  ',StyleTime)
             print('current route is %s ' % (nextEvent.route))
             print('current eventType is %s ' % (nextEvent.eventType))
             print('current componentType is %s ' % (nextEvent.componentType))
@@ -87,7 +90,7 @@ class EventHandeler(object):
             bus.busDepature()
 
 
-
+t=0
 #usage: bus = Bus(23, 1255, stopImpl, 50, scheduler)
 class Bus(object):
     def __init__(self, route, timestamp, stop, capacity, scheduler):
@@ -104,8 +107,7 @@ class Bus(object):
         #normal time or station
         #data_poisson = poisson.rvs(mu=5, size=5)
         #peopleOnBus = sum(data_poisson)
-        self.scheduler = scheduler
-t=0        
+        self.scheduler = scheduler      
     def busGenerate(self):
         global t
         self.numOnRoad += 1
