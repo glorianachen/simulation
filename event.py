@@ -110,7 +110,7 @@ class Bus(object):
         self.numOnRoad += 1
 #interval is a RV
         if t==0:
-            self.timestamp +=0
+            self.timestamp +=1800
         elif t%39==0:
             self.timestamp +=18000
         else:
