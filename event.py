@@ -16,7 +16,8 @@ class Event(object):
         print( 'its eventType is %s ' % (self.eventType))
         print( 'its componentType is %s ' % (self.componentType) )
         # print('its next is %s ' % (self.next))
-
+    
+    #compare with others??
     def __lt__(self, other):
         return self.timestamp < other.timestamp
 
