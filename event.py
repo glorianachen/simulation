@@ -105,8 +105,9 @@ class Bus(object):
         #data_poisson = poisson.rvs(mu=5, size=5)
         #peopleOnBus = sum(data_poisson)
         self.scheduler = scheduler
-        
+t=0        
     def busGenerate(self):
+        global t
         self.numOnRoad += 1
 #interval is a RV
         if t==0:
