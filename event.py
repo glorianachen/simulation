@@ -2,6 +2,7 @@ import queue
     # event = Event(bus, eventData)
 class Event(object):
     def __init__( self, bus, eventData ):
+        self.bus=bus
         self.timestamp = bus.timestamp
         self.route = bus.route
         self.eventType = eventData.eventType
@@ -46,13 +47,13 @@ class Scheduler():
     def schedule(self, event ):
         # self.FEL.put( Event( bus, eventData ) )
         self.FEL.put( event )
-
-    def runSim(self, eventHandler, bus, endTime):
+# change the bus off the input, taken from nextevent
+    def runSim(self, eventHandler, endTime):
         while not self.FEL.empty():
 
             # print(self.FEL.queue)
             nextEvent = self.FEL.get()
-
+            bus=nextEvent.bus
             now = nextEvent.timestamp
             if now > endTime:
                 break
@@ -66,7 +67,7 @@ class Scheduler():
             print( )
 
             # self.time = nextEvent.timestamp
-
+#?????
 class EventHandeler(object):
     def __init__(self):
         pass
@@ -144,7 +145,7 @@ if __name__ == '__main__':
 
     # scheduler = Scheduler()
     # scheduler.schedule(event)
-    scheduler.runSim( eventHandler, bus, 2485 )
+    scheduler.runSim( eventHandler, 2485 )
 
 
 
