@@ -72,8 +72,8 @@ class EventHandeler(object):
         pass
 
     def handle(self, event):
-        if event.eventType == 'generate':
-            event.bus.busGenerate()
+        if event.eventType == 'initiate':
+            event.bus.busInitiate()
 
         elif event.eventType == 'arrival':
             busArrival(event.bus,Object[event.id])
@@ -101,11 +101,11 @@ class Bus(object):
         #peopleOnBus = sum(data_poisson)
         self.scheduler = scheduler
         
-    def busGenerate(self):
+    def busInitiate(self):
 #set a maximum for numOnRoad
-        #if self.numOnRoad<2:
+        if self.numOnRoad<2:
 #NEED:here 10 means interval for second bus
-            #self.scheduler.schedule( Event( Bus(self.route,self.timestamp+10,self.scheduler,self.numOnRoad+1), EventData( 'generate' ,Component(1, 'busGenerate', 10)) ) )
+            self.scheduler.schedule(Event( Bus(self.route,self.timestamp+10,self.scheduler,self.numOnRoad+1), EventData( 'initiate' ,Component(1, 'busInitiate', 10)) ) )
         delay=round(Distance[0]/600,2)
 #NEED: interval is a RV
         self.timestamp += delay
@@ -136,7 +136,7 @@ def busArrival(bus,busstop):
     #here 1 counts for the stopping time 
     bus.timestamp+=delay+1
     if tempid+1 in Busstoplist:
-        scheduler.schedule( Event( bus, EventData( 'arrival' ,Component(tempid+1, 'busArrival',delay )) ) ）
+        scheduler.schedule( Event( bus, EventData( 'arrival' ,Component(tempid+1, 'busArrival',delay ))))
     else:
         scheduler.schedule( Event( bus,EventData( 'thru_intersection' ,Component(tempid+1, 'thru_intersection',delay )) )） 
 
