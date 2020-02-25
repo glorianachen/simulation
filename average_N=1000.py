@@ -1,11 +1,4 @@
-#!/usr/bin/env python2
-# -*- coding: utf-8 -*-
-"""
-Created on Mon Feb 24 21:43:26 2020
-
-@author: chenjiayu
-"""
-
+import statistics 
 import RanGenNew
 RandomGenerator=RanGenNew.ClassRanGen()
 import heapq,random
@@ -13,6 +6,7 @@ from numberformat import timestampToStr
 from trafficlight import checklight
 from thru_inter import thru_intersection
 ##total is the count of people boarding and alighting in busstops
+listofruns=[]
 total=[]
 T=1000
 t=T
@@ -211,6 +205,9 @@ while T>0:
     finalcount=int(sum(total)/2)
     #print('final count is '+str(finalcount))
     T-=1
+    total=[]
+    listofruns.append(finalcount)
 average=int(finalcount/t)
 
-print('average count is '+str(average))
+print('average count is '+str(round(statistics.mean(listofruns),2)))
+print('standard deviation is '+str(round(statistics.stdev(listofruns),2)))
